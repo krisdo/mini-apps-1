@@ -1,39 +1,171 @@
 //list of cells elements
 var squares = document.querySelectorAll('td');
 
-var game = {piece: [[0,0,0], [0, 0, 0]]};
+var Game = function() {
 
-var player;
+  this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  this.player = 'X';
+  this.row = null;
+  this.index = null;
 
-var togglePlayer = () => {
-  if(player) {
-    player = false;
+};
+
+Game.prototype.togglePlayer = function () {
+
+  if(this.player === 'O') {
+    this.player = 'X';
   } else {
-    player = true;
+    this.player = 'O';
   }
 };
 
-//event listener to mark an X on cells when clicked
-squares.forEach( (square) =>{
-  square.addEventListener("click", (event) => {
-    if(!event.target.innerText) {
-      if(player) {
-        togglePlayer();
-        event.target.innerText = 'X';
-      } else {
-        togglePlayer();
-        event.target.innerText = 'O';
+Game.prototype.play = function (id) {
+
+  let empty = false;
+
+  //use id to locate square
+  if (id < 3) {
+    if (this.board[0][id] === 0) {
+      this.row = 0;
+      this.index = id;
+      this.board[0][id] = this.player;
+      empty = true;
+    }
+  } else if (id < 6 && id >= 3) {
+    if (this.board[1][id-3] === 0) {
+      this.row = 1;
+      this.index = id-3;
+      this.board[1][id-3] = this.player;
+      empty = true;
+    }
+  } else {
+    if (this.board[2][id-6] === 0) {
+      this.row = 2;
+      this.index = id-6;
+      this.board[2][id-6] = this.player;
+      empty = true;
+    }
+  }
+
+  return empty;
+};
+
+Game.prototype.reset = function() {
+  this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  this.player = 'X';
+  this.row = null;
+  this.index = null;
+
+};
+
+
+Game.prototype.horizontal = function () {
+  //check the whole row
+  let count = 0;
+
+  for (var i = 0; i <this.board[this.row].length; i++) {
+
+    if(this.board[this.row][i] === this.player) {
+     count++;
+    }
+  }
+
+  if (count === 3) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+Game.prototype.veritcal = function () {
+   //check the whole column
+  let count = 0;
+ 
+  for(var j = 0; j < this.board.length; j++) {
+    // console.log('veritcal square ', this.board[j][this.index], this.player)
+    if (this.board[j][this.index] === this.player) {
+      count++;
+    }
+  }
+  // console.log('vertical ', this.board, count);
+  if (count === 3) {
+    return true;
+  } else {
+    return false;
+  }
+};
+  
+Game.prototype.diaganol = function () {
+  //check diaganol
+  let count = 0;
+  let diaganol = this.index - this.row;
+
+  if(diaganol === 0){
+    for (var k = 0; k < this.board.length; k++) {
+      // console.log('dia square ', this.board[k][k], this.player);
+      if(this.board[k][k] === this.player) {
+        count++;
       }
     }
-  });
+  // console.log(Math.abs.diaganol);
+  } else if (Math.abs(diaganol) === 2) {
+    let index = 0;
+    for (var l = this.board.length - 1; l >= 0; l--) {
+      // console.log('dia square ', this.board[l][index]);
+      if(this.board[l][index] === this.player) {
+        // console.log(this.board[l][index]);
+        count++;
+      }
+      index++;
+    }
+  }
+
+  // console.log('diaganol:', this.board, count);
+    if (count === 3) {
+      return true;
+    } else {
+      return false;
+    }
+};
+
+Game.prototype.tie = function () {
+  for (var i = 0; i < this.board.length; i++) {
+    for (var j = 0; this.board[i].length; j++) {
+      if(this.board[i][j] === 0) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+
+var tictactoe = new Game();
+
+//event listener to mark an X on cells when clicked
+squares.forEach( (square) =>{
+  square.addEventListener("click", (e) => {
+    if(tictactoe.play(event.target.id)) {
+      event.target.innerText = tictactoe.player;
+      if(tictactoe.veritcal() || tictactoe.horizontal() || tictactoe.diaganol()) {
+        alert(`${tictactoe.player} wins!`);
+        return true;
+      } else if (tictactoe.tie()) {
+        alert('Tie!');
+        return true;
+      }
+      tictactoe.togglePlayer();
+    } else {
+      alert('Click Again. Box is occupied');
+    }
+  }, true);
 });
 
 //event listener for reset button
 var button = document.querySelector('button');
 button.addEventListener("click", (event) => {
-  player = false;
+  tictactoe.reset();
   squares.forEach( (square) => {
     square.innerText = null;
-    console.log(square.innerText);
   })
 });
