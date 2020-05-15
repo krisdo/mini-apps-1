@@ -1,16 +1,25 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const port = 3000;
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', `${__dirname}/views`);
+
 
 // app.use(express.static(path.join(__dirname,'client')));
 app.use(express.static('client'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+
+
 app.listen(port, () =>{
   console.log( `listening ${port}`);
 });
+
+
 
 var convert = (report) => {
 
@@ -64,19 +73,27 @@ var convert = (report) => {
   return result;
 };
 
-app.get('/', (req, res) => {
+// app.get('/', (req, res) => {
   
-  // res.sendFile(__dirname + '/client/index.html');
+//   // res.sendFile(__dirname + '/client/index.html');
   
-});
+// });
+
+app.get('/upload_json',
+  (req, res) => {
+    res.render('/upload_json');
+  });
 
 app.post('/upload_json', (req, res) => {
-  // if (err) throw err;
-
+ 
   let report = convert(JSON.parse(req.body.sales));
-  console.log(report);
-  res.send(report);
-  res.redirect('/'); 
+  // fs.writeFile('csv_report.csv', report,  (err) =>{
+  //   if (err) throw err;
+  //   console.log('CSV file created!')
+  // });
+  
+  res.render('csv', {report: `${report}`});
+  // res.redirect('/'); 
 });
 
 
