@@ -4,6 +4,7 @@ var squares = document.querySelectorAll('td');
 var Game = function() {
 
   this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  this.plays = 0;
   this.player = 'X';
   this.row = null;
   this.index = null;
@@ -29,6 +30,7 @@ Game.prototype.play = function (id) {
       this.row = 0;
       this.index = id;
       this.board[0][id] = this.player;
+      this.plays++;
       empty = true;
     }
   } else if (id < 6 && id >= 3) {
@@ -36,6 +38,7 @@ Game.prototype.play = function (id) {
       this.row = 1;
       this.index = id-3;
       this.board[1][id-3] = this.player;
+      this.plays++;
       empty = true;
     }
   } else {
@@ -43,6 +46,7 @@ Game.prototype.play = function (id) {
       this.row = 2;
       this.index = id-6;
       this.board[2][id-6] = this.player;
+      this.plays++;
       empty = true;
     }
   }
@@ -129,14 +133,10 @@ Game.prototype.diaganol = function () {
 };
 
 Game.prototype.tie = function () {
-  for (var i = 0; i < this.board.length; i++) {
-    for (var j = 0; this.board[i].length; j++) {
-      if(this.board[i][j] === 0) {
-        return false;
-      }
-    }
+
+  if (this.plays === 9) {
+    return true;
   }
-  return true;
 };
 
 
@@ -148,15 +148,17 @@ squares.forEach( (square) =>{
     if(tictactoe.play(event.target.id)) {
       event.target.innerText = tictactoe.player;
       if(tictactoe.veritcal() || tictactoe.horizontal() || tictactoe.diaganol()) {
-        alert(`${tictactoe.player} wins!`);
+        setTimeout(() => {alert(`${tictactoe.player} wins!`); }, 500);
         return true;
       } else if (tictactoe.tie()) {
-        alert('Tie!');
+        setTimeout(() => {alert('Tie!');}, 500);
+      
         return true;
       }
       tictactoe.togglePlayer();
     } else {
-      alert('Click Again. Box is occupied');
+      setTimeout(() => {alert('Click Again. Box is occupied'); }, 500);
+      
     }
   }, true);
 });
