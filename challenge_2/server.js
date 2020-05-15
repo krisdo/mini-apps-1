@@ -3,7 +3,8 @@ const path = require('path');
 const port = 3000;
 const app = express();
 
-app.use(express.static(path.join(__dirname,'client')));
+// app.use(express.static(path.join(__dirname,'client')));
+app.use(express.static('client'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -11,18 +12,71 @@ app.listen(port, () =>{
   console.log( `listening ${port}`);
 });
 
+var convert = (report) => {
+
+  var result = '';
+  var array = [];
+  
+  //add keys first
+  Object.keys(report).map( (element) => {
+    if (element !== 'children') {
+      if(element.includes('\,')) {
+        array.push('\"' + element + '\"');
+      } else {
+        array.push(element);
+      }
+    }
+  });
+
+  //result is now a string of the joined elements in the array
+  result = array.join();
+
+  //start recursion
+	var recursion = (obj) => {
+
+    //reset result array to empty
+    array = [];
+
+    //iterate root object
+      for (var key in obj) {
+        //if the key is not children then add values to the array
+        if (key !== "children") {
+          if (typeof obj[key] === 'string' && obj[key].includes(',')) {
+            array.push('\"' + obj[key] + '\"');
+          } else {
+            array.push(obj[key]);
+          }
+        }
+      }
+      
+      //added the new joined array on the next line of string result
+      result = result.concat('\n', array.join());
+    
+      //if there are children, recurse
+    if (obj.children.length > 0) {
+      for (var i = 0; i < obj.children.length; i++) {
+         recursion(obj.children[i]);
+      }	
+    }
+  };
+  
+	recursion(report);
+  return result;
+};
+
 app.get('/', (req, res) => {
   
   // res.sendFile(__dirname + '/client/index.html');
   
- 
 });
 
 app.post('/upload_json', (req, res) => {
   // if (err) throw err;
- var body = JSON.stringify(req.body)
-  // body.split('\"');
-  console.log(body);
+
+  let report = convert(JSON.parse(req.body.sales));
+  console.log(report);
+  res.send(report);
+  res.redirect('/'); 
 });
 
 
