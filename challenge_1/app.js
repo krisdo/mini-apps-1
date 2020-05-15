@@ -56,6 +56,7 @@ Game.prototype.play = function (id) {
 
 Game.prototype.reset = function() {
   this.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  this.plays = 0;
   this.player = 'X';
   this.row = null;
   this.index = null;
@@ -142,25 +143,30 @@ Game.prototype.tie = function () {
 
 var tictactoe = new Game();
 
+var clickEvent = (e) => {
+  if(tictactoe.play(event.target.id)) {
+    event.target.innerText = tictactoe.player;
+    if(tictactoe.veritcal() || tictactoe.horizontal() || tictactoe.diaganol()) {
+      setTimeout(() => {alert(`${tictactoe.player} wins!`); }, 100);
+      squares.forEach( (square) =>{
+        square.removeEventListener("click", clickEvent, false);
+      });
+    } else if (tictactoe.tie()) {
+      setTimeout(() => {alert('Tie!');}, 100);
+      squares.forEach( (square) =>{
+        square.removeEventListener("click", clickEvent, false);
+      });
+    }
+    setTimeout(() => {tictactoe.togglePlayer(); }, 100);
+    
+  } else {
+    setTimeout(() => {alert('Click Again. Box is occupied'); }, 100); 
+  }
+};
+
 //event listener to mark an X on cells when clicked
 squares.forEach( (square) =>{
-  square.addEventListener("click", (e) => {
-    if(tictactoe.play(event.target.id)) {
-      event.target.innerText = tictactoe.player;
-      if(tictactoe.veritcal() || tictactoe.horizontal() || tictactoe.diaganol()) {
-        setTimeout(() => {alert(`${tictactoe.player} wins!`); }, 500);
-        return true;
-      } else if (tictactoe.tie()) {
-        setTimeout(() => {alert('Tie!');}, 500);
-      
-        return true;
-      }
-      tictactoe.togglePlayer();
-    } else {
-      setTimeout(() => {alert('Click Again. Box is occupied'); }, 500);
-      
-    }
-  }, true);
+  square.addEventListener("click", clickEvent, false);
 });
 
 //event listener for reset button
@@ -169,5 +175,6 @@ button.addEventListener("click", (event) => {
   tictactoe.reset();
   squares.forEach( (square) => {
     square.innerText = null;
+    square.addEventListener("click", clickEvent, false);
   })
 });
