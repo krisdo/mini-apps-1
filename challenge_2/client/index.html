@@ -2,12 +2,12 @@
 <html>
   <head>CSV Report Generator</head>
 <body>
-<form method="post" action="/upload_json" class="form-cvs">
-  <textarea id="sales-report" name="sales"></textarea>
+<form enctype="multipart/form-data" method="post" action="/upload_json" class="form">
+  <input type="file" name="sales" accept=".json" class="file">
+  <!-- <textarea name=sales></textarea> -->
   <input type="submit" value="Submit">
 </form>
-<template id="csv-report">
-</template>
+<script src="/node_modules/jquery/dist/jquery.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

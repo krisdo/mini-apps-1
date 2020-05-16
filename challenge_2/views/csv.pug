@@ -2,10 +2,11 @@
 html
   head CSV Report Generator
     body
-  <form method="post" action="/upload_json" class="form-cvs">
-    <textarea id="sales-report" name="sales"></textarea>
-    <input type="submit" value="Submit">
-  </form>
-  p #{report}
+    <form enctype="multipart/form-data" method="post" action="/upload_json" class="form">
+      <input type="file" name="sales" accept=".json" class="file">
+      <input type="submit" value="Submit">
+    </form>
+    a: #{link}
+    table #{report}
 
 

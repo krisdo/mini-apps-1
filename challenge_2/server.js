@@ -1,25 +1,32 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const port = 3000;
+const multer = require('multer');
+
+const port = 5501;
 const app = express();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads')
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.fieldname}.json`)
+  }
+})
+const upload = multer({storage: storage});
 
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/views`);
-
 
 // app.use(express.static(path.join(__dirname,'client')));
 app.use(express.static('client'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-
-
 app.listen(port, () =>{
   console.log( `listening ${port}`);
 });
-
-
 
 var convert = (report) => {
 
@@ -81,19 +88,33 @@ var convert = (report) => {
 
 app.get('/upload_json',
   (req, res) => {
-    res.render('/upload_json');
+   res.render('csv');
   });
 
-app.post('/upload_json', (req, res) => {
+app.post('/upload_json', upload.single('sales'), (req, res) => {
  
-  let report = convert(JSON.parse(req.body.sales));
-  // fs.writeFile('csv_report.csv', report,  (err) =>{
-  //   if (err) throw err;
+  var csvData;
+
+  fs.readFile(req.file.path, 'utf8', (err, data ) => {
+    if(err) throw err;
+    csvData =  convert(JSON.parse(data));
+   
+    fs.writeFile(`${req.file.destination}/report.csv`, csvData, (err) => {
+      if(err) throw err;
+       console.log(csvData);
+       
+    })
+    
+
+  })
+ 
+    // res.render('csv', {report: `${csvData}`});
+  // let report = convert(JSON.parse(req.body.sales));
   //   console.log('CSV file created!')
-  // });
+  // res.sendFile(__dirname + 'csv_report.csv')
   
-  res.render('csv', {report: `${report}`});
-  // res.redirect('/'); 
+  // res.render('csv', {report: `${csvData}`, link: `${req.file.destination}/report.csv` });
+  res.end();
 });
 
 
