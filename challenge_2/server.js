@@ -93,6 +93,8 @@ app.get('/upload_json',
 
 app.post('/upload_json', upload.single('sales'), (req, res) => {
  
+  console.log(req.file.fieldname);
+
   var csvData;
 
   fs.readFile(req.file.path, 'utf8', (err, data ) => {
