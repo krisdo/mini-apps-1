@@ -82,12 +82,12 @@ Game.prototype.horizontal = function () {
   }
 };
 
-Game.prototype.veritcal = function () {
+Game.prototype.vertical = function () {
    //check the whole column
   let count = 0;
  
   for(var j = 0; j < this.board.length; j++) {
-    // console.log('veritcal square ', this.board[j][this.index], this.player)
+    // console.log('vertical square ', this.board[j][this.index], this.player)
     if (this.board[j][this.index] === this.player) {
       count++;
     }
@@ -100,20 +100,20 @@ Game.prototype.veritcal = function () {
   }
 };
   
-Game.prototype.diaganol = function () {
-  //check diaganol
+Game.prototype.diagonal = function () {
+  //check diagonal
   let count = 0;
-  let diaganol = this.index - this.row;
+  let diagonal = this.index - this.row;
 
-  if(diaganol === 0){
+  if(diagonal === 0){
     for (var k = 0; k < this.board.length; k++) {
       // console.log('dia square ', this.board[k][k], this.player);
       if(this.board[k][k] === this.player) {
         count++;
       }
     }
-  // console.log(Math.abs.diaganol);
-  } else if (Math.abs(diaganol) === 2) {
+  // console.log(Math.abs.diagonal);
+  } else if (Math.abs(diagonal) === 2) {
     let index = 0;
     for (var l = this.board.length - 1; l >= 0; l--) {
       // console.log('dia square ', this.board[l][index]);
@@ -125,7 +125,7 @@ Game.prototype.diaganol = function () {
     }
   }
 
-  // console.log('diaganol:', this.board, count);
+  // console.log('diagonal:', this.board, count);
     if (count === 3) {
       return true;
     } else {
@@ -146,7 +146,7 @@ var tictactoe = new Game();
 var clickEvent = (e) => {
   if(tictactoe.play(event.target.id)) {
     event.target.innerText = tictactoe.player;
-    if(tictactoe.veritcal() || tictactoe.horizontal() || tictactoe.diaganol()) {
+    if(tictactoe.vertical() || tictactoe.horizontal() || tictactoe.diagonal()) {
       setTimeout(() => {alert(`${tictactoe.player} wins!`); }, 100);
       squares.forEach( (square) =>{
         square.removeEventListener("click", clickEvent, false);
