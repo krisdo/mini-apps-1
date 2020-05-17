@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 html
-  head CSV Report Generator
+  head CSV Report Generator 
     body
+      h2 Upload More
     <form enctype="multipart/form-data" method="post" action="/upload_json" class="form">
       <input type="file" name="sales" accept=".json" class="file">
       <input type="submit" value="Submit">
     </form>
-    a: #{link}
+    <a href="uploads/report.csv" download>Download File</a>
     table #{report}
 
 
