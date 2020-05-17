@@ -122,17 +122,17 @@ app.post('/upload_json', upload.single('sales'), (req, res) => {
 // });
   fs.readFile(req.file.path, 'utf8', (err, data ) => {
     if(err) throw err;
-    csvData =  convert(JSON.parse(csvData));
-   
+    console.log(data);
+    csvData =  convert(JSON.parse(data));
     fs.writeFile(`${req.file.destination}/report.csv`, csvData, (err) => {
       if(err) throw err;
        console.log('It works!');
+       
+      })
+      
     })
-   
-  })
-  res.end();
-
-  //code before AJAX
+    //code before AJAX
+    res.end();
     // res.redirect('/upload_json')
   // res.render('csv', {report: report});
   // res.render('csv', {report: `${csvData}`});
