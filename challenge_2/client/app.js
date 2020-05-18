@@ -14,9 +14,10 @@ $("form").on('submit', (e) => {
     contentType: false,
     processData: false,
     success: (data) => {
-    console.log(data);
-    $("body").append(`<p>${data}</p>`);
-    $("body").append('<a href="uploads/report.csv" download>Download File </a>');
+    // console.log(data);
+    $(".csv").empty();
+    $(".csv").append(`<p>${data}</p>`);
+    $(".csv").append('<a href="uploads/report.csv" download>Download File </a>');
     }
   })
   .done(function( msg ) {
