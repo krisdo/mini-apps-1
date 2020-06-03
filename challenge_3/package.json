@@ -15,8 +15,11 @@
     "@babel/core": "^7.10.2",
     "@babel/preset-react": "^7.10.1",
     "chai": "^4.2.0",
+    "dep": "^0.18.2",
     "express": "^4.17.1",
     "mocha": "^7.2.0",
+    "mongoose": "^5.9.17",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
