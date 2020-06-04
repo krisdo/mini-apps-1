@@ -1,41 +1,34 @@
-
-// import ReactDOM from 'react-dom';
-//checkout button
-//on click, renders F1 component
-  //F1 component
-    //on click, renders F2 component
-      //F2 component 
-        //on click, renders F3 component
-            //Confirmation Page
-              //purchase button
-
-
 class Shopping extends React.Component {
 
   constructor (props) {
     super(props)
     this.state = {
       clickCounter: 0,
-      user: {
-        id: null,
-        name: null,
-        email: null,
-        password: null,
-        address: {line1: null, line2: null,  city: null, state: null, zipcode: null},
-        phone: null,
-        cc: null,
-        doe: null,
-        CVV: null,
-        billing_zip: null
-
-      }
+      id: null,
+      name: null,
+      email: null,
+      password: null,
+      line1: null,
+      line2: null,  
+      city: null,
+      state: null,
+      zipcode: null,
+      phone: null,
+      cc: null,
+      doe: null,
+      CVV: null,
+      billing_zip: null
     }
-    this.clickCount = this.clickCount.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.handleOnSubmit = this.handleOnSubmit.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+   
   }
 
-  clickCount(e){
+  handleOnSubmit(e){
+    e.preventDefault();
+    const target = e.target;
+   
     e.persist();
     if(e.target.className === 'purchase'){
       this.setState({
@@ -46,48 +39,71 @@ class Shopping extends React.Component {
         clickCounter: this.state.clickCounter + 1,
       });
     }
+
+    const body = this.state;
+    if(e.type === 'submit') {
+      let options = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body),
+      };
+
+      fetch('/accounts', options)
+      .then( (res) => {
+        return res.json();
+      })
+      .then((data) =>{
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err)
+        });
+    
+    }
+  };
+
+
+  handleInputChange(e){
+    // e.preventDefault();
+    const target = e.target;
+    const name = target.name;
+    const value = target.value;
+    this.setState({
+    [name]: value});
   }
 
-
-  handleSubmit(){
-
-  }
-
-  handleChange(){
-
-  }
   render() {
     return (<div>
       <h1>Shopping Purchase</h1>
-      {this.state.clickCounter === 0 && <button onClick={this.clickCount}>Ready? Checkout</button>}
-      {this.state.clickCounter === 1 && <div><F1 onClick={this.clickCount}/></div>}
-      {this.state.clickCounter === 2 && <div><F2 onClick={this.clickCount}/></div>}
-      {this.state.clickCounter === 3 && <div><F3 onClick={this.clickCount}/></div>}
-      {this.state.clickCounter === 4 && <div><Confirmation onClick={this.clickCount} user={this.state.user}/></div>}
+      {this.state.clickCounter === 0 && <button type="button" onClick={this.handleOnSubmit}>Ready? Checkout</button>}
+      {this.state.clickCounter === 1 && <div><F1 onSubmit={this.handleOnSubmit} inputChange={this.handleInputChange}/></div>}
+      {this.state.clickCounter === 2 && <div><F2 onClick={this.handleOnSubmit}/></div>}
+      {this.state.clickCounter === 3 && <div><F3 onClick={this.handleOnSubmit}/></div>}
+      {this.state.clickCounter === 4 && <div><Confirmation onClick={this.handleOnSubmit} state={this.state}/></div>}
       </div>
       )
   }
    
 };
 
-const F1 = (props) => {
+const F1 = ({inputChange, onSubmit}) => {
 
     return(<div>
      <h3>Step 1: Create Account</h3>
-      <form>
+      <form onSubmit={onSubmit}>
         <label>
         Name:
-        <input id="name" type="text" name="name"/>
+        <input id="name" type="text" name="name" onChange={inputChange}/>
         </label>
         <label>
         e-mail:
-        <input id="email" type="text" name="email"/>
+        <input id="email" type="text" name="email" onChange={inputChange}/>
         </label>
         <label>
         password:
-        <input id="password" type="text" name="password"/>
+        <input id="password" type="text" name="password" onChange={inputChange}/>
         </label>
-      <input type="submit" value="Next: Step 2" onClick={props.onClick}/>
+      <input type="submit" value="Next: Step 2" />
       </form>
       </div>);
 
@@ -151,18 +167,18 @@ const F3 = (props) => {
 
 };
 
-const Confirmation = ({user, onClick}) => {
+const Confirmation = (props) => {
 
   return(<div>
     <h3>Final Step: Confirmation</h3>
-    <p>Name: {user.name}</p>
-    <p>Phone: {user.phone}</p>
-    <p>e-mail: {user.email}</p>
+    <p>Name: {props.state.name}</p>
+    <p>Phone: {props.state.phone}</p>
+    <p>e-mail: {props.state.email}</p>
     <p>ADDRESS:</p>
-    <p>{user.address.line1}</p>
-    <p>{user.address.line2}</p>
-    <p>{user.address.city}, {user.address.state} {user.address.zipcode}</p>
-    <button className="purchase" onClick={onClick}>SPEND MONEY!</button>
+    <p>{props.state.line1}</p>
+    <p>{props.state.line2}</p>
+    <p>{props.state.city}, {props.state.state} {props.state.zipcode}</p>
+    <button className="purchase" onClick={props.onClick}>SPEND MONEY!</button>
    </div>)
 };
 
