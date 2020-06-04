@@ -1,33 +1,23 @@
-CREATE DATABASE IF NOT EXISTS shoppingcart;
+DROP DATABASE IF EXISTS shopping;
 
-USE shoppingcart;
+CREATE DATABASE shopping;
+
+USE shopping;
 
 CREATE TABLE account (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(30) NOT NULL,
-  email VARCHAR(40) NOT NULL,
-  password VARCHAR(30) NOT NULL
-
+  name VARCHAR(30),
+  email VARCHAR(40),
+  password VARCHAR(30),
+  line1 VARCHAR(40),
+  line2 VARCHAR(40),
+  city VARCHAR(40) ,
+  state VARCHAR(20),
+  zipcode INT,
+  phone INT,
+  cc INT,
+  doe VARCHAR(30),
+  cvv INT,
+  billing_zip INT 
+ 
 );
-
-CREATE TABLE shipping (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  address VARCHAR(40) NOT NULL,
-  phone VARCHAR(30) NOT NULL,
-  account_id INT,
-  FOREIGN KEY (account_id) REFERENCES account(id)
-);
-
-
-CREATE TABLE creditcard (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  card_number INT NOT NULL,
-  expiry_date VARCHAR(30) NOT NULL,
-  address VARCHAR(40) NOT NULL,
-  phone VARCHAR(30) NOT NULL,
-  account_id INT,
-  FOREIGN KEY (account_id) REFERENCES account(id)
-
-);
-
-

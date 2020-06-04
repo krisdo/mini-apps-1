@@ -40,7 +40,9 @@ class Shopping extends React.Component {
    }
 
  submit(obj){
+   if(this.state.id) {
     obj.id = this.state.id;
+   }
     console.log(obj);
 
     let options = {
@@ -139,6 +141,7 @@ class F2 extends React.Component {
       city: null,
       state: null,
       zipcode: null,
+      phone: null
     }
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -175,6 +178,10 @@ class F2 extends React.Component {
       Zipcode:
       <input id="zipcode" type="text" name="zipcode" onChange={this.inputChange}/>
       </label>
+      <p><label>
+      Phone Number:
+      <input id="phone" type="text" name="phone" onChange={this.inputChange}/>
+      </label></p>
     <input type="submit" value="Next: Step 3" />
     </form>
     </div>);
@@ -188,7 +195,7 @@ class F3 extends React.Component {
     this.state = {
       cc: null,
       doe: null,
-      CVV: null,
+      cvv: null,
       billing_zip: null
     }
     this.onSubmit = this.onSubmit.bind(this);
