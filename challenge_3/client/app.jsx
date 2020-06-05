@@ -14,17 +14,17 @@ class Shopping extends React.Component {
       zipcode: null,
       phone: null,
       cc: null,
-      doe: null,
-      billing_zip: null
+     
     }
 
   
     this.clickCounter = this.clickCounter.bind(this);
+    this.getData = this.getData.bind(this);
    
   }
 
   clickCounter(e){
-    // e.preventDefault();
+    e.preventDefault();
     e.persist();
     if(e.target.className === 'purchase'){
       this.setState({
@@ -35,7 +35,6 @@ class Shopping extends React.Component {
       this.setState({
         clickCounter: this.state.clickCounter + 1,
       });
-      console.log(this.state.clickCounter);
     } 
    }
 
@@ -43,8 +42,7 @@ class Shopping extends React.Component {
    if(this.state.id) {
     obj.id = this.state.id;
    }
-    console.log(obj);
-
+  
     let options = {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -56,13 +54,48 @@ class Shopping extends React.Component {
       return res.json();
     })
     .then((data) =>{
-      console.log(data);
+      if(this.state.id === null) {
+        this.setState({
+          id: data.id
+        })
+      }
     })
     .catch((err) => {
       console.log(err)
       });
   
   };
+
+  getData() {
+    console.log('get data');
+    const id = this.state.id;
+    const options = {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id})
+    };
+
+    fetch('/summary', options)
+    .then( (res) => {
+      return res.json(); 
+    })
+    .then( (data) => {
+      this.setState({
+          name: data.name,
+          email: data.email,
+          line1: data.line1,
+          line2: data.line2,  
+          city: data.city,
+          state: data.state,
+          zipcode: data.zipcode,
+          phone: data.phone,
+          cc: data.cc
+      });
+    })
+    .catch( (err) => {
+      console.log(err);
+    })
+  }
 
 
   handleInputChange(e){
@@ -75,14 +108,18 @@ class Shopping extends React.Component {
 
   }
 
+componentDidMount(){
+  // this.getData();
+}
+
   render() {
     return (<div>
       <h1>Shopping Purchase</h1>
       {this.state.clickCounter === 0 && <button type="button" onClick={this.clickCounter}>Ready? Checkout</button>}
       {this.state.clickCounter === 1 && <div><F1 submit={this.submit.bind(this)} onClick={this.clickCounter} inputChange={this.handleInputChange}/></div>}
       {this.state.clickCounter === 2 && <div><F2 submit={this.submit.bind(this)} onClick={this.clickCounter}  inputChange={this.handleInputChange}/></div>}
-      {this.state.clickCounter === 3 && <div><F3 submit={this.submit.bind(this)} onClick={this.clickCounter}  inputChange={this.handleInputChange}/></div>}
-      {this.state.clickCounter === 4 && <div><Confirmation onClick={this.clickCounter} state={this.state}/></div>}
+      {this.state.clickCounter === 3 && <div><F3 submit={this.submit.bind(this)} onClick={this.clickCounter} getData={this.getData} inputChange={this.handleInputChange}/></div>}
+      {this.state.clickCounter === 4 && <div><Confirmation onClick={this.clickCounter} state={this.state} /></div>}
       </div>
       )
   }
@@ -205,6 +242,7 @@ class F3 extends React.Component {
   onSubmit(e){
     e.preventDefault();
     this.props.submit(this.state);
+    this.props.getData();
     this.props.onClick(e);
   }
 

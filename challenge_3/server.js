@@ -12,10 +12,19 @@ app.listen(port, () => console.log(`listening to ${port}`));
 
 
 app.post('/accounts', (req, res) => {
-  // console.log(req.body);
-
-  saveInfo(req.body, (id)=> {
+  saveInfo(req.body, (err, id)=> {
+    if(id) {
     res.send({id});
+    }
+  });
+});
+
+app.post('/summary', (req, res) => {
+
+  const id = req.body.id;
+  return getInfo(id, (err, results)=> {
+
+    res.send(results[0]);
   });
 
 });
@@ -28,33 +37,53 @@ const connection = mysql.createConnection({
 })
 
 const saveInfo = (obj,cb) => {
-
   var arrayCol = [];
   var arrayVal = [];
   var arrayDup = [];
 
   for(var key in obj) {
     arrayCol.push(key);
-    arrayVal.push(`"${obj[key]}"`);
-    if(key !== 'id') {
-      arrayDup.push(`${key} = "${obj[key]}"`);
-    }  
+    if(obj[key] === null) {
+      arrayVal.push(`${obj[key]}`);
+      if(key !== 'id') {
+        arrayDup.push(`${key} = ${obj[key]}`);
+      }
+    } else {
+      arrayVal.push(`"${obj[key]}"`);
+      if(key !== 'id') {
+        arrayDup.push(`${key} = "${obj[key]}"`);
+      }
+    }
   }
    var col = arrayCol.join(', ');
    var val = arrayVal.join(', ');
    var dup = arrayDup.join(', ');
   
-  // let queryStr = `INSERT INTO account (key) VALUES (obj[key]) ON DUPLICATE KEY UPDATE key = obj[key]`
-  let queryStr = `INSERT INTO account (${col}) VALUES (${val})`;
+   let queryStr = `INSERT INTO account (${col}) VALUES (${val}) ON DUPLICATE KEY UPDATE ${dup}`;
   connection.query(queryStr, (err, results, fields) => {
     if(err) {
-      console.log(err);
+    cb(err, null);
     }
-    cb(results.insertId);
+    if(results) {
+      cb(null, results.insertId);
+
+    }
   });
 };
 
+const getInfo = (id, cb) => {
 
+  let queryStr = `SELECT * FROM account WHERE id = ${id};`;
+  connection.query(queryStr, (err, results, fields) => {
+   if(err) {
+    cb(err, null);
+   }
+   if(results) {
+    cb(null, results);
+
+   }
+ });
+};
 
 // mongoose.connect(`mongodb://localhost/shoppingcart`, { useUnifiedTopology: true, useNewUrlParser: true })
 // .then( ()=>console.log('Connected to Mongoose'))
