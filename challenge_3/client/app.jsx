@@ -159,7 +159,7 @@ class F1 extends React.Component {
          </label></p> 
          <p><label>
          Password:
-         <input id="password" type="text" name="password" onChange={this.inputChange}/>
+         <input id="password" type="password" name="password" onChange={this.inputChange}/>
          </label></p> 
        <input type="submit" value="Next: Step 2" />
        </form>

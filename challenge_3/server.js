@@ -22,7 +22,7 @@ app.post('/accounts', (req, res) => {
 app.post('/summary', (req, res) => {
 
   const id = req.body.id;
-  return getInfo(id, (err, results)=> {
+   getInfo(id, (err, results)=> {
 
     res.send(results[0]);
   });
@@ -80,7 +80,6 @@ const getInfo = (id, cb) => {
    }
    if(results) {
     cb(null, results);
-
    }
  });
 };
