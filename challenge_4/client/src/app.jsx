@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Square from '.components/Square.jsx';
 
 class ConnectFour extends React.Component {
 
