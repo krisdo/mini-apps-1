@@ -43,9 +43,24 @@ class ConnectFour extends React.Component {
       
   }
 
-  // checkHorizontal(board){
-  //   for(board)
-  // }
+  checkHorizontal(){
+   
+    const {currentPlayer, board} = this.state;
+    
+    for(let r = 0; r < board.length; r++) {
+      let tracking = 0;
+      for (let c = 0; c < board[r].length; c++){
+        if(board[r][c] === currentPlayer) {
+          tracking++;
+        }
+      }
+      if(tracking >= 4) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 
   clickSquare(e) {
     let column = e.target.getAttribute('data-columns');
@@ -63,7 +78,12 @@ class ConnectFour extends React.Component {
       if(board[row][col] === 0) {
         board[row][col] = this.state.currentPlayer;
         console.log(board);
-        return this.setState({board: board});
+         this.setState({board: board});
+         this.renderBoard(board);
+         if(this.checkHorizontal()){
+           return setTimeout( () => alert('Win!'), 100);
+         }
+         return;
       }
     }
    
