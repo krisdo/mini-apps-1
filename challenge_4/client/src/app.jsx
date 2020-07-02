@@ -11,7 +11,8 @@ class ConnectFour extends React.Component {
     super(props);
     this.state = {
       currentPlayer: null,
-      board: []
+      board: [],
+      win: false
     }
     this.newGame = this.newGame.bind(this);
     this.clickSquare = this.clickSquare.bind(this);
@@ -38,6 +39,7 @@ class ConnectFour extends React.Component {
       }
       this.setState({
         currentPlayer: 1,
+        win: false,
         board
       });
       
@@ -51,33 +53,46 @@ class ConnectFour extends React.Component {
       for (let c = 0; c < board[r].length; c++){
         if(board[r][c] === currentPlayer) {
           tracking++;
+          if(tracking >= 4) {
+            return true;
+          }
+        } else{
+          tracking = 0;
         }
-      }
-      if(tracking >= 4) {
-        return true;
-      }
+      }    
     }
+    
     return false;
   }
 
   checkVeritcal(){
     const {currentPlayer, board} = this.state;
-    let tracking = 0;
     for(let c = 0; c < board[0].length; c++) {
       let tracking = 0;
       for (let r = 0; r < board.length; r++) {
         if(board[r][c] === currentPlayer){
           tracking++;
+          if(tracking >= 4) {
+            return true;
+          }
+        } else{
+          tracking = 0;
         }
-      }
-      if(tracking >= 4) {
-        return true;
       }
     }
     return false;
   }
 
+  checkDiagonal(){
+
+  }
+
+  clickPostWin(){
+    return setTimeout(() => alert('Play Again!'), 100);
+  }
+
   clickSquare(e) {
+  
     let column = e.target.getAttribute('data-columns');
     // console.log(column);
    
@@ -98,6 +113,7 @@ class ConnectFour extends React.Component {
          this.setState({board: board});
          this.renderBoard(board);
          if(this.checkHorizontal()|| this.checkVeritcal() ){
+           this.setState({win: true});
            return setTimeout( () => alert(`${color} Win!`), 50);
          }
          return;
@@ -108,7 +124,7 @@ class ConnectFour extends React.Component {
 
   renderBoard(board){
     // console.log(this.state.board);
-  return board.map( (rows, rowIndex) => ( <Rows rows={this.state.board[rowIndex]} click={this.clickSquare} rowIndex={rowIndex} key={rowIndex}/>));
+  return board.map( (rows, rowIndex) => ( <Rows rows={this.state.board[rowIndex]} click={this.state.win ? this.clickPostWin : this.clickSquare} rowIndex={rowIndex} key={rowIndex}/>));
   }
 
   componentDidMount() {
@@ -118,10 +134,10 @@ class ConnectFour extends React.Component {
   render(){
     
     return(
-      <Container className='fluid board text-center'>
+      <Container className='fluid board text-center mt-3'>
         <h1 className='text-center'>Connect Four</h1>
        
-        <Button className='text-center mr-1' onClick={this.newGame}>Restart</Button>
+        <Button className='text-center mt-4 mb-2' onClick={this.newGame}>New Game</Button>
         
           {this.state.board !== null ? this.renderBoard(this.state.board): null}
       </Container>
