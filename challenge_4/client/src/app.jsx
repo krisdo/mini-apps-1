@@ -44,7 +44,6 @@ class ConnectFour extends React.Component {
   }
 
   checkHorizontal(){
-   
     const {currentPlayer, board} = this.state;
     
     for(let r = 0; r < board.length; r++) {
@@ -61,6 +60,22 @@ class ConnectFour extends React.Component {
     return false;
   }
 
+  checkVeritcal(){
+    const {currentPlayer, board} = this.state;
+    let tracking = 0;
+    for(let c = 0; c < board[0].length; c++) {
+      let tracking = 0;
+      for (let r = 0; r < board.length; r++) {
+        if(board[r][c] === currentPlayer){
+          tracking++;
+        }
+      }
+      if(tracking >= 4) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   clickSquare(e) {
     let column = e.target.getAttribute('data-columns');
@@ -72,7 +87,9 @@ class ConnectFour extends React.Component {
   }
 
   play(col) {
-    const {board} = this.state;
+    const {board, currentPlayer} = this.state;
+    const color = currentPlayer === 1 ? 'Red' : 'Yellow'
+  
     //start with the last row 
     for(let row = board.length - 1; row >= 0; row--) {
       if(board[row][col] === 0) {
@@ -80,8 +97,8 @@ class ConnectFour extends React.Component {
         console.log(board);
          this.setState({board: board});
          this.renderBoard(board);
-         if(this.checkHorizontal()){
-           return setTimeout( () => alert('Win!'), 100);
+         if(this.checkHorizontal()|| this.checkVeritcal() ){
+           return setTimeout( () => alert(`${color} Win!`), 50);
          }
          return;
       }
