@@ -34,31 +34,43 @@ class Square extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      view: 'blank'
+      view: this.props.view,
+      row: this.props.row,
+      col: this.props.col,
     }
+    // this.onClick = this.onClick.bind(this);
+  }
+
+  play(){
+    this.props.play()
   }
 
   onClick(e) {
   
-    if(props.player === 1) {
-      this.setState({
-        view: 'red'
-      });
-    } else {
-      this.setState({
-        view: 'yellow'
-      });
-    }
+   this.props.click();
 
+  }
+
+  renderPlay(){
+    const {view} = this.state;
+
+    if(view === 1) {
+      return <StyledCircleRed data-columns={this.state.col} onClick={this.props.click(this)}></StyledCircleRed>
+    }
+    if(view === 2) {
+      return <StyledCircleYellow data-columns={this.state.col} onClick={this.props.click(this)}></StyledCircleYellow>
+    } else {
+      return <StyledCircleBlank data-columns={this.state.col} onClick={this.props.click(this)}></StyledCircleBlank>
+    }
   }
 
   render(){
 
     return(
   
-     <StyledSquare className='square'>
-      <StyledCircle className='circle'></StyledCircle>
-      </StyledSquare>   
+    <StyledSquare className='square'>
+      <StyledCircleBlank/>
+    </StyledSquare>   
 
   
     )
