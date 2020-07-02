@@ -82,10 +82,123 @@ class ConnectFour extends React.Component {
     }
     return false;
   }
-
-  checkDiagonal(){
+  checkRightDiagonal(){
     const {currentPlayer, board} = this.state;
 
+    for(let r = 0; r < board.length; r++) {
+      for(let c = board[r].length; c > -1; c--) {
+        if( c + r === 8 && r < 3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c - 1] &&
+            currentPlayer === board[r+2][c - 2] &&
+            currentPlayer === board[r+3][c - 3] ) {
+              return true;
+          }
+        }
+        if( c + r === 7 && r < 3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c - 1] &&
+            currentPlayer === board[r+2][c - 2] &&
+            currentPlayer === board[r+3][c - 3] ) {
+              return true;
+          }
+        }
+        if( c + r === 6 && r < 3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c - 1] &&
+            currentPlayer === board[r+2][c - 2] &&
+            currentPlayer === board[r+3][c - 3] ) {
+              return true;
+          }
+        }
+        if( c + r === 5 && r < 3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c - 1] &&
+            currentPlayer === board[r+2][c - 2] &&
+            currentPlayer === board[r+3][c - 3] ) {
+              return true;
+          }
+        }
+        if( c + r === 4 && r < 3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c - 1] &&
+            currentPlayer === board[r+2][c - 2] &&
+            currentPlayer === board[r+3][c - 3] ) {
+              return true;
+          }
+        }
+        if( c + r === 3 && r < 3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r +1][c - 1] &&
+            currentPlayer === board[r+2][c - 2] &&
+            currentPlayer === board[r+3][c - 3] ) {
+              return true;
+          }
+        }
+        
+      }
+    }
+
+    return false;
+  }
+
+  checkLeftDiagonal(){
+    const {currentPlayer, board} = this.state;
+
+    for(let r = 0; r < board.length; r++) {
+      for(let c =0; c < board[r].length; c++) {
+        if(r === c && r <3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c + 1] &&
+            currentPlayer === board[r+2][c + 2] &&
+            currentPlayer === board[r+3][c + 3] ) {
+              return true;
+          }
+        }
+        if(r === c -1 && r <3){
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c + 1] &&
+            currentPlayer === board[r+2][c + 2] &&
+            currentPlayer === board[r+3][c + 3] ) {
+              return true;
+          }
+        }
+        if(r === c-2 && r <3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r + 1][c + 1] &&
+            currentPlayer === board[r +2][c + 2] &&
+            currentPlayer === board[r+3][c + 3] ) {
+              return true;
+          }
+        }
+        if(r === c-3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c + 1] &&
+            currentPlayer === board[r+2][c + 2] &&
+            currentPlayer === board[r+3][c + 3] ) {
+              return true;
+          }
+        }
+        if( r - 1 === c && r <3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r][c + 1] &&
+            currentPlayer === board[r][c + 2] &&
+            currentPlayer === board[r][c + 3] ) {
+              return true;
+          }
+        }
+        if(r -2 === c && r < 3) {
+          if (currentPlayer === board[r][c] &&
+            currentPlayer === board[r+1][c + 1] &&
+            currentPlayer === board[r+2][c + 2] &&
+            currentPlayer === board[r+3][c + 3] ) {
+              return true;
+          }
+        }
+      }
+    }
+
+    return false;
   }
 
   checkTie(){
@@ -95,7 +208,6 @@ class ConnectFour extends React.Component {
         row.forEach( (elem) => elem === 0? available++ : null)
     )
     return available === 0 ? true : false;
-
   }
 
 
@@ -107,10 +219,11 @@ class ConnectFour extends React.Component {
     for(let row = board.length - 1; row >= 0; row--) {
       if(board[row][col] === 0) {
         board[row][col] = this.state.currentPlayer;
-        console.log(board);
+      
         this.setState({board: board});
         this.renderBoard(board);
-        if (this.checkHorizontal()|| this.checkVeritcal()) {
+        console.log(board);
+        if (this.checkHorizontal()|| this.checkVeritcal() || this.checkRightDiagonal() || this.checkLeftDiagonal()) {
           this.setState({gameover: true});
           return setTimeout( () => alert(`${color} Win!`), 50);
         } else if (this.checkTie()) {
