@@ -12,7 +12,7 @@ class ConnectFour extends React.Component {
     this.state = {
       currentPlayer: null,
       board: [],
-      win: false
+      gameover: false
     }
     this.newGame = this.newGame.bind(this);
     this.clickSquare = this.clickSquare.bind(this);
@@ -39,7 +39,7 @@ class ConnectFour extends React.Component {
       }
       this.setState({
         currentPlayer: 1,
-        win: false,
+        gameover: false,
         board
       });
       
@@ -84,7 +84,43 @@ class ConnectFour extends React.Component {
   }
 
   checkDiagonal(){
+    const {currentPlayer, board} = this.state;
 
+  }
+
+  checkTie(){
+    const {board} = this.state;
+    let available = 0;
+    board.forEach( (row)=> 
+        row.forEach( (elem) => elem === 0? available++ : null)
+    )
+    return available === 0 ? true : false;
+
+  }
+
+
+  play(col) {
+    const {board, currentPlayer} = this.state;
+    const color = currentPlayer === 1 ? 'Red' : 'Yellow'
+  
+    //start with the last row 
+    for(let row = board.length - 1; row >= 0; row--) {
+      if(board[row][col] === 0) {
+        board[row][col] = this.state.currentPlayer;
+        console.log(board);
+        this.setState({board: board});
+        this.renderBoard(board);
+        if (this.checkHorizontal()|| this.checkVeritcal()) {
+          this.setState({gameover: true});
+          return setTimeout( () => alert(`${color} Win!`), 50);
+        } else if (this.checkTie()) {
+          this.setState({gameover: true});
+          return setTimeout( () => alert('Tie!'), 50);
+        }
+         return;
+      }
+    }
+   
   }
 
   clickPostWin(){
@@ -101,30 +137,9 @@ class ConnectFour extends React.Component {
     this.togglePlayer();
   }
 
-  play(col) {
-    const {board, currentPlayer} = this.state;
-    const color = currentPlayer === 1 ? 'Red' : 'Yellow'
-  
-    //start with the last row 
-    for(let row = board.length - 1; row >= 0; row--) {
-      if(board[row][col] === 0) {
-        board[row][col] = this.state.currentPlayer;
-        console.log(board);
-         this.setState({board: board});
-         this.renderBoard(board);
-         if(this.checkHorizontal()|| this.checkVeritcal() ){
-           this.setState({win: true});
-           return setTimeout( () => alert(`${color} Win!`), 50);
-         }
-         return;
-      }
-    }
-   
-  }
-
   renderBoard(board){
     // console.log(this.state.board);
-  return board.map( (rows, rowIndex) => ( <Rows rows={this.state.board[rowIndex]} click={this.state.win ? this.clickPostWin : this.clickSquare} rowIndex={rowIndex} key={rowIndex}/>));
+  return board.map( (rows, rowIndex) => ( <Rows rows={this.state.board[rowIndex]} click={this.state.gameover ? this.clickPostWin : this.clickSquare} rowIndex={rowIndex} key={rowIndex}/>));
   }
 
   componentDidMount() {
