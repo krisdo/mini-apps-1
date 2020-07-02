@@ -15,14 +15,12 @@ class ConnectFour extends React.Component {
     }
     this.newGame = this.newGame.bind(this);
     this.clickSquare = this.clickSquare.bind(this);
-    this.renderBoard = this.renderBoard.bind(this);
+  
     
   }
 
   togglePlayer(){
-
     const {currentPlayer} = this.state;
-  
      (currentPlayer === 1) ? 
      this.setState({
         currentPlayer: 2
@@ -30,7 +28,6 @@ class ConnectFour extends React.Component {
       this.setState({
         currentPlayer: 1
       })
-    
   }
 
   newGame(){
@@ -52,20 +49,29 @@ class ConnectFour extends React.Component {
 
   clickSquare(e) {
     let column = e.target.getAttribute('data-columns');
-    console.log(column);
+    // console.log(column);
+   
+    this.play(column);
+    this.renderBoard(this.state.board);
+    this.togglePlayer();
   }
 
-  play(col){
-
-
-
+  play(col) {
+    const {board} = this.state;
+    //start with the last row 
+    for(let row = board.length - 1; row >= 0; row--) {
+      if(board[row][col] === 0) {
+        board[row][col] = this.state.currentPlayer;
+        console.log(board);
+        return this.setState({board: board});
+      }
+    }
+   
   }
 
   renderBoard(board){
-    console.log(this.state.board);
-
-  return board.map( (rows, rowIndex) => { console.log(this.state.board[rowIndex]); return <Rows rows={this.state.board[rowIndex]} rowIndex={rowIndex}/>});
-
+    // console.log(this.state.board);
+  return board.map( (rows, rowIndex) => ( <Rows rows={this.state.board[rowIndex]} click={this.clickSquare} rowIndex={rowIndex} key={rowIndex}/>));
   }
 
   componentDidMount() {
@@ -78,7 +84,7 @@ class ConnectFour extends React.Component {
       <Container className='fluid board text-center'>
         <h1 className='text-center'>Connect Four</h1>
        
-        <Button className='text-center mr-1'>Restart</Button>
+        <Button className='text-center mr-1' onClick={this.newGame}>Restart</Button>
         
           {this.state.board !== null ? this.renderBoard(this.state.board): null}
       </Container>

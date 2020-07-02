@@ -38,29 +38,30 @@ class Square extends React.Component {
       row: this.props.row,
       col: this.props.col,
     }
-    // this.onClick = this.onClick.bind(this);
+    this.click = this.click.bind(this);
   }
 
-  play(){
-    this.props.play()
+ click(e) {
+   this.props.click(e);
   }
 
-  onClick(e) {
-  
-   this.props.click();
-
+  static getDerivedStateFromProps(nextProps, prevState) {
+    // // You don't have to do this check first, but it can help prevent an unneeded render
+    if (nextProps.view !== prevState.view) {
+      return { view: nextProps.view };
+    }
   }
 
   renderPlay(){
     const {view} = this.state;
 
     if(view === 1) {
-      return <StyledCircleRed data-columns={this.state.col} onClick={this.props.click(this)}></StyledCircleRed>
+      return <StyledCircleRed data-columns={this.state.col} onClick={this.click}></StyledCircleRed>
     }
     if(view === 2) {
-      return <StyledCircleYellow data-columns={this.state.col} onClick={this.props.click(this)}></StyledCircleYellow>
+      return <StyledCircleYellow data-columns={this.state.col} onClick={this.click}></StyledCircleYellow>
     } else {
-      return <StyledCircleBlank data-columns={this.state.col} onClick={this.props.click(this)}></StyledCircleBlank>
+      return <StyledCircleBlank data-columns={this.state.col} onClick={this.click}></StyledCircleBlank>
     }
   }
 
@@ -69,7 +70,7 @@ class Square extends React.Component {
     return(
   
     <StyledSquare className='square'>
-      <StyledCircleBlank/>
+      {this.renderPlay()}
     </StyledSquare>   
 
   
